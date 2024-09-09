@@ -1,0 +1,99 @@
+el('toggleInfo').addEventListener('click', function () {
+    var windowWidth = window.innerWidth;
+    var myDiv = document.getElementsByClassName('toggle-show-hide');
+    var toggleInfo = el('toggleInfo');
+    if (toggleInfo.checked == true) {
+        for (var i = 0; i < myDiv.length; i++) {
+            myDiv[i].classList.add('d-none');
+        }
+        el('colLeft').classList.add('w-100');
+        hideSidebar();
+    }
+    else {
+        for (var i = 0; i < myDiv.length; i++) {
+            myDiv[i].classList.remove('d-none');
+        }
+        el('colLeft').classList.remove('w-100');
+        if (windowWidth >= 768) {
+            showSidebar();
+        }
+    }
+});
+
+// Luu tam gia tri nguoi dung nhap vao 
+el('sector_list').addEventListener('keyup', function () {
+    var extra_name = el('extra_name').value;
+    var sector_list = el('sector_list').value;
+    if (sector_list) {
+        var array = sector_list.split("\n");
+        setCookie('sector_list' + extra_name, b64EncodeUnicode(array.join("|")), 0.16666666666); // save in 4h
+    }
+});
+
+// Restore from draft
+function restoreDraft(cookie) {
+    if (cookie) {
+        var list = b64DecodeUnicode(cookie);
+        el('sector_list').innerHTML = list.split("|").join("\n");
+        el('sector_list').dispatchEvent(new KeyboardEvent('keyup'));
+        el('chude').textContent = 'Báº£n lÆ°u tá»± Ä‘á»™ng';
+        // new Bootstrap toast instance
+        var myToast = bootstrap.Toast.getOrCreateInstance(el('toast'), { autohide: false });
+        myToast.hide();
+    }
+}
+
+// remove draft
+function removeDraft() {
+    var extra_name = el('extra_name').value;
+    var cookie = getCookie('sector_list' + extra_name);
+    if (cookie) {
+        setCookie('sector_list' + extra_name, '', 1);
+        deleteCookie('sector_list' + extra_name);
+    }
+}
+
+// Update káº¿t quáº£
+function countEntries() {
+    var sector_list = el('sector_list').value.trim();
+    var count = sector_list.split("\n").length;
+    el('entries_count').textContent = count;
+}
+
+//XĂ³a káº¿t quáº£ 
+function clearResult() {
+    el('wheel_result').value = '';
+    el('result_count').textContent = 0;
+}
+
+//sort káº¿t quáº£
+function sortResult() {
+    var wheel_result = el('wheel_result').value;
+    var arr = wheel_result.trim().split("\n");
+    arr = arr.sort();
+    var str = arr.join("\n");
+    el('wheel_result').value = str;
+}
+
+// Chuyá»ƒn sang trang full mĂ n hĂ¬nh
+
+// reset cĂ i Ä‘áº·t wheel vá» máº·c Ä‘á»‹nh
+function resetWheel() {
+    var extra_name = el('extra_name').value;
+    setCookie('wheel_setting' + extra_name, '', 1);
+    deleteCookie('wheel_setting' + extra_name);
+    location.reload();
+}
+
+function activateTab(button) {
+    // Láº¥y táº¥t cáº£ cĂ¡c nĂºt trong danh sĂ¡ch
+    var buttons = document.querySelectorAll('.button-theme');
+
+    // Láº·p qua táº¥t cáº£ cĂ¡c nĂºt vĂ  xĂ³a lá»›p "active"
+    buttons.forEach(function (btn) {
+        btn.classList.remove('active');
+    });
+
+    // ThĂªm lá»›p "active" cho nĂºt Ä‘Æ°á»£c chá»n
+    button.classList.add('active');
+}
